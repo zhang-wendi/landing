@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Industry - Market Insight</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f9fafb;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+        .search-results::-webkit-scrollbar {
+            width: 6px;
+        }
+        .search-results::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .search-results::-webkit-scrollbar-thumb {
+            background: #d1d5db; 
+            border-radius: 3px;
+        }
+        .search-results::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af; 
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="w-full max-w-2xl">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Market Insight Explorer</h1>
+            <p class="text-lg text-gray-600">Select your industry to view specific market benchmarks and trends.</p>
+        </div>
+
+        <!-- Search Component -->
+        <div class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400 text-lg"></i>
+            </div>
+            <input 
+                type="text" 
+                id="industryInput"
+                class="block w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-xl text-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-shadow duration-200 ease-in-out hover:shadow-md"
+                placeholder="Search industry (e.g., E-commerce, Gaming, Finance...)"
+                autocomplete="off"
+            >
+            
+            <!-- Results Dropdown -->
+            <div 
+                id="resultsDropdown" 
+                class="absolute z-10 w-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 hidden overflow-hidden transition-all duration-200"
+            >
+                <ul id="resultsList" class="max-h-80 overflow-y-auto search-results py-2">
+                    <!-- Results will be populated here -->
+                </ul>
+                <div id="noResults" class="hidden px-4 py-3 text-gray-500 text-center text-sm">
+                    No industries found matching your search.
+                </div>
+            </div>
+        </div>
+
+        <!-- Popular Tags (Optional Hint) -->
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-500 mb-2">Popular Searches:</p>
+            <div class="flex flex-wrap justify-center gap-2">
+                <button onclick="fillSearch('Fashion')" class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-600 hover:bg-gray-50 transition-colors">Fashion</button>
+                <button onclick="fillSearch('RPG')" class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-600 hover:bg-gray-50 transition-colors">RPG Games</button>
+                <button onclick="fillSearch('Skincare')" class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-600 hover:bg-gray-50 transition-colors">Skincare</button>
+                <button onclick="fillSearch('Crypto')" class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-600 hover:bg-gray-50 transition-colors">Crypto</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock Data: Level 1 - Level 2 - Level 3
+        const industries = [
+            "E-commerce - Fashion - Men's Clothing",
+            "E-commerce - Fashion - Women's Clothing",
+            "E-commerce - Fashion - Accessories",
+            "E-commerce - Electronics - Smartphones",
+            "E-commerce - Electronics - Laptops",
+            "E-commerce - Home & Garden - Furniture",
+            "E-commerce - Beauty & Personal Care - Skincare",
+            "E-commerce - Beauty & Personal Care - Makeup",
+            "Gaming - Mobile - RPG",
+            "Gaming - Mobile - Strategy",
+            "Gaming - Mobile - Casual",
+            "Gaming - Console - FPS",
+            "Gaming - Console - Adventure",
+            "Gaming - PC - MMORPG",
+            "Finance - Banking - Credit Cards",
+            "Finance - Banking - Personal Loans",
+            "Finance - Investment - Crypto",
+            "Finance - Investment - Stocks",
+            "Finance - Insurance - Life Insurance",
+            "Education - Online Learning - Coding Bootcamps",
+            "Education - Online Learning - Language Apps",
+            "Travel - Flights - International",
+            "Travel - Hotels - Luxury Resorts",
+            "SaaS - Productivity - Project Management",
+            "SaaS - Marketing - CRM",
+            "Health & Fitness - Apps - Meditation",
+            "Health & Fitness - Apps - Workout Tracking"
+        ];
+
+        const input = document.getElementById('industryInput');
+        const dropdown = document.getElementById('resultsDropdown');
+        const resultsList = document.getElementById('resultsList');
+        const noResults = document.getElementById('noResults');
+
+        // Fuzzy search function (simple includes check, split by space for multiple keywords)
+        function search(query) {
+            const terms = query.toLowerCase().split(' ').filter(t => t.length > 0);
+            return industries.filter(industry => {
+                const lowerIndustry = industry.toLowerCase();
+                return terms.every(term => lowerIndustry.includes(term));
+            });
+        }
+
+        // Render results
+        function renderResults(results) {
+            resultsList.innerHTML = '';
+            
+            if (results.length === 0) {
+                resultsList.classList.add('hidden');
+                noResults.classList.remove('hidden');
+            } else {
+                resultsList.classList.remove('hidden');
+                noResults.classList.add('hidden');
+                
+                results.forEach(industry => {
+                    const li = document.createElement('li');
+                    li.className = 'px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors flex items-center group';
+                    
+                    // Highlight matching parts logic could be complex, keeping it simple for now
+                    // Just displaying the text nicely
+                    const parts = industry.split(' - ');
+                    const formattedText = `
+                        <div class="flex flex-col">
+                            <span class="font-medium text-gray-900 group-hover:text-blue-700">${industry}</span>
+                            <span class="text-xs text-gray-400 mt-0.5 group-hover:text-blue-400">${parts[0]} > ${parts[1]}</span>
+                        </div>
+                        <i class="fas fa-chevron-right ml-auto text-gray-300 group-hover:text-blue-400 text-sm"></i>
+                    `;
+                    
+                    li.innerHTML = formattedText;
+                    li.onclick = () => selectIndustry(industry);
+                    resultsList.appendChild(li);
+                });
+            }
+            
+            dropdown.classList.remove('hidden');
+        }
+
+        // Event Listeners
+        input.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            if (query.length > 0) {
+                const results = search(query);
+                renderResults(results);
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // Show dropdown again if input has value and is focused
+        input.addEventListener('focus', () => {
+            if (input.value.trim().length > 0) {
+                dropdown.classList.remove('hidden');
+            }
+        });
+
+        function selectIndustry(industry) {
+            // Redirect to dashboard with selected industry
+            window.location.href = `market_insight_dashboard.html?industry=${encodeURIComponent(industry)}`;
+        }
+
+        function fillSearch(term) {
+            input.value = term;
+            input.dispatchEvent(new Event('input'));
+            input.focus();
+        }
+    </script>
+</body>
+</html>

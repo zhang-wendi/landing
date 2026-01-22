@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Insight Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f9fafb;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+        .trend-down { color: #ef4444; }
+        .trend-up { color: #22c55e; }
+        .active-tab {
+            background-color: #eff6ff;
+            color: #3b82f6;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="p-6">
+
+    <div class="max-w-7xl mx-auto space-y-6">
+
+        <!-- SECTION 1: Market Insight & Performance Overview -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">Market Insight</h1>
+                <p class="text-gray-500 mt-1">Provide cross-platform, cross-country, cross-industry advertising benchmark metrics to quickly evaluate campaign performance and identify optimization opportunities.</p>
+            </div>
+
+            <div class="mb-4">
+                <h2 class="text-xl font-bold text-gray-900">Performance Overview</h2>
+                <p class="text-sm text-gray-500">Media Platform x Country</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <!-- Platform Filter -->
+                <div class="flex space-x-2">
+                    <button class="flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md border border-blue-100 text-sm font-medium">
+                        <i class="fab fa-facebook mr-2"></i> Meta
+                    </button>
+                    <button class="flex items-center px-3 py-1.5 bg-gray-50 text-gray-400 rounded-md border border-gray-200 text-sm font-medium hover:bg-gray-100 cursor-pointer login-trigger">
+                        <i class="fas fa-lock mr-2"></i> TikTok
+                    </button>
+                    <button class="flex items-center px-3 py-1.5 bg-gray-50 text-gray-400 rounded-md border border-gray-200 text-sm font-medium hover:bg-gray-100 cursor-pointer login-trigger">
+                        <i class="fas fa-lock mr-2"></i> Google
+                    </button>
+                </div>
+
+                <!-- Dropdowns -->
+                <div class="flex space-x-3">
+                    <button class="flex items-center px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-400 hover:bg-gray-100 cursor-pointer login-trigger">
+                        <i class="fas fa-lock mr-2 text-gray-400"></i> All Countries <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    <button id="industryDropdown" class="flex items-center px-3 py-1.5 bg-white border border-gray-200 rounded-md text-sm text-gray-600 hover:bg-gray-50 cursor-pointer">
+                        <span id="industryText">All Industries</span> <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    <button class="flex items-center px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-400 hover:bg-gray-100 cursor-pointer login-trigger">
+                        <i class="fas fa-lock mr-2 text-gray-400"></i> Past 14 days <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- CPM -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="text-sm text-gray-500 mb-1">Average CPM</div>
+                    <div class="text-2xl font-bold text-gray-900">$5.22</div>
+                    <div class="text-xs font-medium mt-1 trend-down">
+                        -32.5% <span class="text-gray-400 font-normal">from last period</span>
+                    </div>
+                </div>
+                <!-- CTR -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="text-sm text-gray-500 mb-1">Average CTR</div>
+                    <div class="text-2xl font-bold text-gray-900">3.84%</div>
+                    <div class="text-xs font-medium mt-1 trend-down">
+                        -7.7% <span class="text-gray-400 font-normal">from last period</span>
+                    </div>
+                </div>
+                <!-- CVR -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="text-sm text-gray-500 mb-1">Average CVR</div>
+                    <div class="text-2xl font-bold text-gray-900">0.08%</div>
+                    <div class="text-xs font-medium mt-1 trend-down">
+                        -23.5% <span class="text-gray-400 font-normal">from last period</span>
+                    </div>
+                </div>
+                <!-- ROAS -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="text-sm text-gray-500 mb-1">Average ROAS</div>
+                    <div class="text-2xl font-bold text-gray-900">229.08x</div>
+                    <div class="text-xs font-medium mt-1 trend-up">
+                        +7691.0% <span class="text-gray-400 font-normal">from last period</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Daily Performance Trends -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="flex flex-wrap items-start justify-between mb-6">
+                <div>
+                    <h2 class="text-lg font-bold text-gray-900">Daily Performance Trends</h2>
+                    <p class="text-sm text-gray-500">Daily marketing metrics for Meta</p>
+                </div>
+                <div class="flex space-x-1 bg-gray-50 p-1 rounded-lg">
+                    <button id="btn-cpm" onclick="updateMetric('CPM')" class="px-3 py-1 text-xs font-medium rounded bg-blue-100 text-blue-600 transition-colors">CPM</button>
+                    <button id="btn-ctr" onclick="updateMetric('CTR')" class="px-3 py-1 text-xs font-medium rounded text-gray-500 hover:text-gray-900 transition-colors">CTR</button>
+                    <button id="btn-cvr" onclick="updateMetric('CVR')" class="px-3 py-1 text-xs font-medium rounded text-gray-500 hover:text-gray-900 transition-colors">CVR</button>
+                    <button id="btn-roas" onclick="updateMetric('ROAS')" class="px-3 py-1 text-xs font-medium rounded text-gray-500 hover:text-gray-900 transition-colors">ROAS</button>
+                </div>
+            </div>
+            
+            <div class="h-64 w-full">
+                <canvas id="trendChart"></canvas>
+            </div>
+            <div class="flex justify-center mt-4 items-center space-x-4">
+                <div class="flex items-center text-sm text-gray-600">
+                    <span class="w-3 h-3 rounded-full bg-blue-500 mr-2"></span>
+                    <span id="chart-metric-label">CPM</span>
+                </div>
+                <div class="text-sm text-gray-500" id="chart-average-label">Average: $6.27</div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Trending Recommendations -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-gray-900">Trending Recommendations</h2>
+                <p class="text-sm text-gray-500">Discover top performing assets and influencers in your industry</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Card 1: Trending Ads -->
+                <div class="border border-gray-200 rounded-lg p-4 flex flex-col">
+                    <div class="mb-3">
+                        <h3 class="font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-ad text-blue-500 mr-2"></i> Trending Ads
+                        </h3>
+                        <p class="text-xs text-gray-500">Top performing ad creatives</p>
+                    </div>
+                    <!-- Carousel Container with Blur Overlay -->
+                    <div class="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden group">
+                         <!-- Overlay Trigger -->
+                         <div class="absolute inset-0 z-20 cursor-pointer login-trigger flex items-center justify-center bg-white/10 backdrop-blur-md group-hover:bg-white/20 transition-all">
+                            <div class="bg-black/50 p-2 rounded-full">
+                                <i class="fas fa-lock text-white text-xl"></i>
+                            </div>
+                        </div>
+
+                        <div id="carousel-ads" class="w-full h-full relative blur-sm">
+                            <!-- Slide 1 -->
+                            <div class="absolute inset-0 transition-opacity duration-500 opacity-100 flex items-center justify-center bg-gray-200">
+                                <div class="text-center">
+                                    <i class="fas fa-image text-4xl text-gray-400 mb-2"></i>
+                                    <p class="text-sm text-gray-500">Ad Creative #1</p>
+                                </div>
+                            </div>
+                            <!-- Slide 2 -->
+                            <div class="absolute inset-0 transition-opacity duration-500 opacity-0 flex items-center justify-center bg-gray-300">
+                                <div class="text-center">
+                                    <i class="fas fa-video text-4xl text-gray-400 mb-2"></i>
+                                    <p class="text-sm text-gray-500">Ad Creative #2</p>
+                                </div>
+                            </div>
+                            <!-- Slide 3 -->
+                            <div class="absolute inset-0 transition-opacity duration-500 opacity-0 flex items-center justify-center bg-gray-200">
+                                <div class="text-center">
+                                    <i class="fas fa-bullhorn text-4xl text-gray-400 mb-2"></i>
+                                    <p class="text-sm text-gray-500">Ad Creative #3</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Indicators -->
+                        <div class="absolute bottom-2 left-0 right-0 flex justify-center space-x-1.5 blur-sm">
+                            <div class="w-1.5 h-1.5 rounded-full bg-white opacity-100"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-white opacity-50"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-white opacity-50"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Trending Products -->
+                <div class="border border-gray-200 rounded-lg p-4 flex flex-col">
+                    <div class="mb-3">
+                        <h3 class="font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-shopping-bag text-green-500 mr-2"></i> Trending Products
+                        </h3>
+                        <p class="text-xs text-gray-500">Best-selling products in niche</p>
+                    </div>
+                    <!-- Carousel Container with Blur Overlay -->
+                    <div class="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden group">
+                        <!-- Overlay Trigger -->
+                        <div class="absolute inset-0 z-20 cursor-pointer login-trigger flex items-center justify-center bg-white/10 backdrop-blur-md group-hover:bg-white/20 transition-all">
+                            <div class="bg-black/50 p-2 rounded-full">
+                                <i class="fas fa-lock text-white text-xl"></i>
+                            </div>
+                        </div>
+
+                        <div id="carousel-products" class="w-full h-full relative blur-sm">
+                            <!-- Slide 1 -->
+                            <div class="absolute inset-0 transition-opacity duration-500 opacity-100 flex items-center justify-center bg-green-50">
+                                <div class="text-center">
+                                    <i class="fas fa-box-open text-4xl text-green-300 mb-2"></i>
+                                    <p class="text-sm text-gray-500">Product #1</p>
+                                </div>
+                            </div>
+                            <!-- Slide 2 -->
+                            <div class="absolute inset-0 transition-opacity duration-500 opacity-0 flex items-center justify-center bg-green-100">
+                                <div class="text-center">
+                                    <i class="fas fa-tshirt text-4xl text-green-300 mb-2"></i>
+                                    <p class="text-sm text-gray-500">Product #2</p>
+                                </div>
+                            </div>
+                            <!-- Slide 3 -->
+                            <div class="absolute inset-0 transition-opacity duration-500 opacity-0 flex items-center justify-center bg-green-50">
+                                <div class="text-center">
+                                    <i class="fas fa-shoe-prints text-4xl text-green-300 mb-2"></i>
+                                    <p class="text-sm text-gray-500">Product #3</p>
+                                </div>
+                            </div>
+                        </div>
+                         <!-- Indicators -->
+                         <div class="absolute bottom-2 left-0 right-0 flex justify-center space-x-1.5 blur-sm">
+                            <div class="w-1.5 h-1.5 rounded-full bg-white opacity-100"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-white opacity-50"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-white opacity-50"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Top KOLs -->
+                <div class="border border-gray-200 rounded-lg p-4 flex flex-col">
+                    <div class="mb-3">
+                        <h3 class="font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-star text-yellow-500 mr-2"></i> Top KOLs
+                        </h3>
+                        <p class="text-xs text-gray-500">Highly relevant influencers</p>
+                    </div>
+                    <!-- Carousel Container with Blur Overlay -->
+                    <div class="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden group flex items-center justify-center">
+                        <!-- Overlay Trigger -->
+                        <div class="absolute inset-0 z-20 cursor-pointer login-trigger flex items-center justify-center bg-white/10 backdrop-blur-md group-hover:bg-white/20 transition-all">
+                            <div class="bg-black/50 p-2 rounded-full">
+                                <i class="fas fa-lock text-white text-xl"></i>
+                            </div>
+                        </div>
+
+                        <div id="carousel-kols" class="w-full h-full relative blur-sm">
+                            <!-- Slide 1 -->
+                            <div class="absolute inset-0 transition-opacity duration-500 opacity-100 flex flex-col items-center justify-center bg-yellow-50">
+                                <div class="w-20 h-20 rounded-full bg-gray-300 mb-3 overflow-hidden border-2 border-white shadow-sm flex items-center justify-center">
+                                     <i class="fas fa-user text-3xl text-gray-400"></i>
+                                </div>
+                                <p class="font-medium text-gray-800">@InfluencerOne</p>
+                                <p class="text-xs text-gray-500">1.2M Followers</p>
+                            </div>
+                            <!-- Slide 2 -->
+                            <div class="absolute inset-0 transition-opacity duration-500 opacity-0 flex flex-col items-center justify-center bg-yellow-100">
+                                <div class="w-20 h-20 rounded-full bg-gray-300 mb-3 overflow-hidden border-2 border-white shadow-sm flex items-center justify-center">
+                                    <i class="fas fa-user-astronaut text-3xl text-gray-400"></i>
+                                </div>
+                                <p class="font-medium text-gray-800">@TechGuru</p>
+                                <p class="text-xs text-gray-500">850K Followers</p>
+                            </div>
+                            <!-- Slide 3 -->
+                            <div class="absolute inset-0 transition-opacity duration-500 opacity-0 flex flex-col items-center justify-center bg-yellow-50">
+                                <div class="w-20 h-20 rounded-full bg-gray-300 mb-3 overflow-hidden border-2 border-white shadow-sm flex items-center justify-center">
+                                    <i class="fas fa-user-ninja text-3xl text-gray-400"></i>
+                                </div>
+                                <p class="font-medium text-gray-800">@StyleIcon</p>
+                                <p class="text-xs text-gray-500">2.5M Followers</p>
+                            </div>
+                        </div>
+                         <!-- Indicators -->
+                         <div class="absolute bottom-2 left-0 right-0 flex justify-center space-x-1.5 blur-sm">
+                            <div class="w-1.5 h-1.5 rounded-full bg-white opacity-100"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-white opacity-50"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-white opacity-50"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity opacity-0">
+        <div class="bg-black text-white w-full max-w-md p-8 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 relative border border-gray-800">
+            
+            <!-- Logo Section -->
+            <div class="flex flex-col items-center mb-6">
+                <div class="flex items-center space-x-2 mb-4">
+                    <div class="bg-white rounded-full p-1 w-8 h-8 flex items-center justify-center">
+                        <i class="fas fa-shapes text-black text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight">CreatiVault</span>
+                    <span class="bg-gray-800 text-blue-400 text-xs font-bold px-2 py-0.5 rounded ml-2 border border-blue-900 shadow-[0_0_10px_rgba(59,130,246,0.5)]">AI</span>
+                </div>
+                <h2 class="text-3xl font-bold text-center">Welcome to CreatiVault</h2>
+            </div>
+
+            <!-- Buttons -->
+            <div class="space-y-4">
+                <button class="w-full bg-white text-black font-semibold py-3 px-4 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors">
+                    <i class="fab fa-google text-lg mr-3"></i> Login with Google
+                </button>
+
+                <div class="relative flex py-2 items-center">
+                    <div class="flex-grow border-t border-gray-700"></div>
+                </div>
+
+                <button class="w-full bg-[#1a1a1a] text-white font-medium py-3 px-4 rounded-lg border border-gray-700 hover:bg-[#252525] transition-colors">
+                    Continue with Email
+                </button>
+            </div>
+            
+            <!-- Close Button (Optional UX) -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Chart.js Configuration
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        
+        // Gradient for the chart fill
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)'); // Blue with opacity
+        gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+        // Data definition
+        const metricData = {
+            'CPM': {
+                label: 'CPM',
+                data: [7.8, 7.9, 7.85, 7.8, 7.9, 8.1, 8.0, 4.5, 4.6, 4.3, 4.4, 4.45, 4.8],
+                average: '$6.27',
+                format: (value) => '$' + value.toFixed(2),
+                yMax: 12
+            },
+            'CTR': {
+                label: 'CTR',
+                data: [3.2, 3.5, 3.4, 3.8, 4.1, 3.9, 3.84, 3.6, 3.5, 3.7, 3.9, 4.0, 3.8],
+                average: '3.84%',
+                format: (value) => value.toFixed(1) + '%',
+                yMax: 6
+            },
+            'CVR': {
+                label: 'CVR',
+                data: [0.05, 0.06, 0.07, 0.08, 0.09, 0.08, 0.08, 0.07, 0.06, 0.08, 0.09, 0.10, 0.08],
+                average: '0.08%',
+                format: (value) => value.toFixed(2) + '%',
+                yMax: 0.15
+            },
+            'ROAS': {
+                label: 'ROAS',
+                data: [180, 190, 210, 220, 230, 229, 240, 210, 200, 220, 235, 240, 230],
+                average: '229.08x',
+                format: (value) => value.toFixed(0) + 'x',
+                yMax: 300
+            }
+        };
+
+        let currentMetric = 'CPM';
+        let trendChart;
+
+        function initChart() {
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan 8', 'Jan 9', 'Jan 10', 'Jan 11', 'Jan 12', 'Jan 13', 'Jan 14', 'Jan 15', 'Jan 16', 'Jan 17', 'Jan 18', 'Jan 19', 'Jan 20'],
+                    datasets: [{
+                        label: 'CPM',
+                        data: metricData['CPM'].data,
+                        borderColor: '#3b82f6',
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        tension: 0.4, // Smooth curves
+                        pointRadius: 0, // Hide points by default
+                        pointHoverRadius: 6,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += metricData[currentMetric].format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 12,
+                            ticks: {
+                                callback: function(value) {
+                                    return metricData[currentMetric].format(value);
+                                },
+                                color: '#9ca3af',
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            grid: {
+                                color: '#f3f4f6',
+                                borderDash: [5, 5]
+                            },
+                            border: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#9ca3af',
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            border: {
+                                display: false
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+        }
+
+        // Make updateMetric global so HTML onclick can find it
+        window.updateMetric = function(metric) {
+            currentMetric = metric;
+            const data = metricData[metric];
+            
+            // Update Chart Data
+            trendChart.data.datasets[0].data = data.data;
+            trendChart.data.datasets[0].label = data.label;
+            
+            // Update Scales
+            trendChart.options.scales.y.max = data.yMax;
+            
+            // Force update to refresh ticks callback
+            trendChart.update();
+
+            // Update Bottom Legend
+            document.getElementById('chart-metric-label').textContent = metric;
+            document.getElementById('chart-average-label').textContent = 'Average: ' + data.average;
+
+            // Update Buttons
+            ['CPM', 'CTR', 'CVR', 'ROAS'].forEach(m => {
+                const btn = document.getElementById('btn-' + m.toLowerCase());
+                if (m === metric) {
+                    btn.className = 'px-3 py-1 text-xs font-medium rounded bg-blue-100 text-blue-600 transition-colors';
+                } else {
+                    btn.className = 'px-3 py-1 text-xs font-medium rounded text-gray-500 hover:text-gray-900 transition-colors';
+                }
+            });
+        };
+
+        // Initialize
+        initChart();
+
+        // Carousel Logic
+        function setupCarousel(id) {
+            const container = document.getElementById(id);
+            if (!container) return;
+            const slides = container.children;
+            const indicators = container.parentElement.querySelectorAll('.bottom-2 > div');
+            let index = 0;
+
+            setInterval(() => {
+                // Hide current
+                slides[index].classList.remove('opacity-100');
+                slides[index].classList.add('opacity-0');
+                if (indicators[index]) indicators[index].classList.replace('opacity-100', 'opacity-50');
+
+                // Update index
+                index = (index + 1) % slides.length;
+
+                // Show next
+                slides[index].classList.remove('opacity-0');
+                slides[index].classList.add('opacity-100');
+                if (indicators[index]) indicators[index].classList.replace('opacity-50', 'opacity-100');
+            }, 3000 + Math.random() * 1000); // Add randomness to desync them
+        }
+
+        // Initialize carousels
+        document.addEventListener('DOMContentLoaded', () => {
+            setupCarousel('carousel-ads');
+            setupCarousel('carousel-products');
+            setupCarousel('carousel-kols');
+
+            // Handle Industry URL Parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const industry = urlParams.get('industry');
+            if (industry) {
+                // Expected format: "Level 1 - Level 2 - Level 3"
+                // We want to display the last part (Level 3)
+                const parts = industry.split(' - ');
+                // If splitting worked and we have parts, take the last one. 
+                // Fallback to full string if split doesn't look right.
+                const level3 = parts.length > 1 ? parts[parts.length - 1] : industry;
+                
+                const industryText = document.getElementById('industryText');
+                if (industryText) {
+                    industryText.textContent = level3;
+                    // Optional: Add visual indication that a filter is active
+                    const industryDropdown = document.getElementById('industryDropdown');
+                    if(industryDropdown) {
+                        industryDropdown.classList.remove('text-gray-600');
+                        industryDropdown.classList.add('text-blue-600', 'bg-blue-50', 'border-blue-200');
+                    }
+                }
+            }
+
+            // Modal Logic
+            const modal = document.getElementById('loginModal');
+            const triggers = document.querySelectorAll('.login-trigger');
+            const modalContent = modal.querySelector('div');
+
+            function openModal() {
+                modal.classList.remove('hidden');
+                // Small timeout to allow display:block to apply before opacity transition
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modalContent.classList.remove('scale-95');
+                    modalContent.classList.add('scale-100');
+                }, 10);
+            }
+
+            window.closeModal = function() {
+                modal.classList.add('opacity-0');
+                modalContent.classList.remove('scale-100');
+                modalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openModal();
+                });
+            });
+
+            // Close on click outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
